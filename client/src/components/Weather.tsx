@@ -1,5 +1,5 @@
 import { PureComponent } from "react";
-import Loader from "./Loader";
+import Loader from "./SmallLoader";
 import weatherApi, { getImage } from "../api/weather";
 
 interface IState {

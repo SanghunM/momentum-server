@@ -1,131 +1,114 @@
-import React, { PureComponent } from "react";
+import React, { useEffect, useState } from "react";
 import TodoComponent from "./Todo";
 import Todo from "../model/Todo";
-import AddList from "./AddList";
-import { BooleanLiteral } from "typescript";
 import AddTodo from "./AddTodo";
+import TodoPresenter from "../presenters/TodoPresenter";
+
+interface Iprops {
+  presenter: TodoPresenter;
+}
 
 interface IState {
   todos: Todo[];
   activeKey: string;
   isAddingmode: boolean;
 }
-class TodoList extends PureComponent<{}, IState> {
-  state = {
-    todos: [
-      new Todo("study react"),
-      new Todo("study angular"),
-      new Todo("study english"),
-    ],
-    activeKey: "",
-    isAddingmode: false,
+
+const TodoList: React.FC<Iprops> = ({ presenter }) => {
+  const [todos, setTodos] = useState<IState["todos"]>([]);
+  const [activeKey, setActiveKey] = useState<IState["activeKey"]>("");
+  const [isAddingmode, setAddingMode] = useState<IState["isAddingmode"]>(false);
+
+  useEffect(() => {
+    setTodos(presenter.todos);
+  }, [presenter.todos]);
+
+  // componentDidMount() {
+  //   this.setState({
+  //     todos: this.props.presenter.todos,
+  //     // todos: this.props.presenter; [
+  //     //   new Todo("study react"),
+  //     //   new Todo("study angular"),
+  //     //   new Todo("study english"),
+  //     // ],
+  //   });
+  // }
+  const updateTodo = (id: string, message: string, done?: boolean) => {
+    console.log(todos);
+    //setActiveKey("");
+    presenter.updateTodo(setTodos, id, message, done);
   };
-  renderTodoList() {
-    if (this.state.todos.length == 0) {
+
+  const updateActiveKey = (id: string) => {
+    setActiveKey(id);
+  };
+
+  const addHandler = (message?: string) => {
+    presenter.addHandler(setTodos, setAddingMode, message);
+  };
+  const deleteHandler = (id: string) => {
+    presenter.deleteHandler(setTodos, id);
+  };
+
+  const resetActiveKey = () => {
+    setActiveKey("");
+  };
+
+  const renderTodoList = () => {
+    if (todos.length === 0) {
       return <li>Get started on new Project!</li>;
     }
-    return this.state.todos.map((todo: Todo) => (
+    return todos.map((todo: Todo) => (
       <TodoComponent
         key={todo.id}
+        resetActiveKey={resetActiveKey}
         todo={todo}
-        updateTodo={this.updateTodo}
-        updateActiveKey={this.updateActiveKey}
-        activeyKey={this.state.activeKey}
-        deleteHandler={this.deleteHandler}
+        updateTodo={updateTodo}
+        updateActiveKey={updateActiveKey}
+        activeyKey={activeKey}
+        deleteHandler={deleteHandler}
       />
     ));
-  }
-
-  updateActiveKey = (id: string) => {
-    this.setState({
-      activeKey: id,
-    });
   };
 
-  addList = (message: string) => {
-    const newList = [...this.state.todos, new Todo(message, false)];
-    this.setState({
-      todos: newList,
-    });
-  };
+  // setAddingMode(!isAddingmode);
 
-  deleteHandler = (id: string) => {
-    const newList = this.state.todos.filter((todo: Todo) => todo.id !== id);
-    this.setState({
-      todos: newList,
-    });
-  };
+  return (
+    <>
+      <h1
+        style={{
+          margin: "1rem",
+          fontSize: "1.2rem",
+        }}
+      >
+        Today
+      </h1>
+      {isAddingmode ? (
+        <AddTodo setAddingMode={setAddingMode} addHandler={addHandler} />
+      ) : (
+        <>
+          <ul>{renderTodoList()}</ul>
+          <button
+            style={{
+              width: "100%",
+              padding: "0.5rem",
+              borderRadius: "1rem",
+              border: "0",
+              marginTop: "0.1rem",
+              color: "white",
+              backgroundColor: "red",
+              cursor: "pointer",
+            }}
+            onClick={() => addHandler()}
+          >
+            add
+          </button>
+        </>
+      )}
 
-  addHandler = (message?: string) => {
-    console.log(`message is ${message}`);
-    if (message) {
-      const newList = [...this.state.todos, new Todo(message)];
-      this.setState({
-        isAddingmode: !this.state.isAddingmode,
-        todos: newList,
-      });
-    }
+      {/* <AddList addList={addList} /> */}
 
-    this.setState({
-      isAddingmode: !this.state.isAddingmode,
-    });
-  };
-
-  updateTodo = (id: string, message: string, done?: boolean) => {
-    const newTodos = [...this.state.todos];
-    const target: Todo | undefined = newTodos.find(
-      (todo: Todo) => todo.id === id
-    );
-    if (target) {
-      if (done) {
-        target.done = done;
-        target.updated = new Date();
-      }
-      if (message) {
-        target.todoMessage = message;
-        target.updated = new Date();
-      }
-    }
-    this.setState({
-      todos: newTodos,
-      activeKey: "",
-    });
-  };
-  render() {
-    return (
-      <>
-        <h1
-          style={{
-            margin: "1rem",
-            fontSize: "1.2rem",
-          }}
-        >
-          Today
-        </h1>
-        {this.state.isAddingmode ? (
-          <AddTodo addHandler={this.addHandler} />
-        ) : (
-          <>
-            <ul>{this.renderTodoList()}</ul>
-            <button
-              style={{
-                width: "100%",
-                padding: "0.5rem, 1rem",
-                borderRadius: "1rem",
-                border: "0",
-                color: "white",
-                backgroundColor: "red",
-                cursor: "pointer",
-              }}
-              onClick={() => this.addHandler()}
-            >
-              add
-            </button>
-          </>
-        )}
-        {/* <AddList addList={this.addList} /> */}
-
-        {/* <button
+      {/* <button
           style={{
             width: "100%",
             padding: "0.5rem, 1rem",
@@ -139,9 +122,8 @@ class TodoList extends PureComponent<{}, IState> {
         >
           add
         </button> */}
-      </>
-    );
-  }
-}
+    </>
+  );
+};
 
 export default TodoList;

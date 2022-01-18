@@ -8,6 +8,8 @@ import Greeting from "../components/Greeting";
 import TodoList from "../components/TodoList";
 import Quote from "../components/Quote";
 import Weather from "../components/Weather";
+import TodoPresenter from "../presenters/TodoPresenter";
+import Todo from "../model/Todo";
 
 interface IState {
   isLoading: boolean;
@@ -146,7 +148,11 @@ class MomentumPage extends Component<{}, IState> {
         <div className="main-content">
           <Watch></Watch>
           <Greeting></Greeting>
-          <TodoList />
+          <TodoList
+            presenter={
+              new TodoPresenter([new Todo("study react"), new Todo("study JS")])
+            }
+          />
           <Quote />
         </div>
         <Weather />

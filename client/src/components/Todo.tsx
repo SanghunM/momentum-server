@@ -1,5 +1,4 @@
 import React, { PureComponent } from "react";
-import { BooleanLiteral } from "typescript";
 import Todo from "../model/Todo";
 
 interface IProps {
@@ -8,12 +7,7 @@ interface IProps {
   updateActiveKey: (id: string) => void;
   activeyKey: string;
   deleteHandler: (id: string) => void;
-}
-
-interface IState {
-  todoMessage: string;
-  done: boolean;
-  isEdit: boolean;
+  resetActiveKey: () => void;
 }
 
 class TodoComponent extends PureComponent<IProps> {
@@ -50,6 +44,7 @@ class TodoComponent extends PureComponent<IProps> {
     e.preventDefault();
     this.props.updateTodo(this.props.todo.id, this.state.todoMessage);
     this.updateHandler();
+    this.props.resetActiveKey();
   };
 
   messageHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -61,6 +56,7 @@ class TodoComponent extends PureComponent<IProps> {
   render() {
     const isEditable =
       this.props.activeyKey === this.props.todo.id || !this.props.activeyKey;
+
     const { updated } = this.props.todo;
     const TextComponent = (
       <>

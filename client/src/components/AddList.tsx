@@ -1,7 +1,4 @@
 import React, { PureComponent } from "react";
-import Todo from "../model/Todo";
-import TodoComponent from "./Todo";
-import TodoList from "./TodoList";
 
 interface IProps {
   addList: (message: string) => void;
