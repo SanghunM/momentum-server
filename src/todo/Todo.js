@@ -1,10 +1,8 @@
 class Todo {
-  private id_: string;
-  private created_: Date;
-  private updated_: Date;
-
-  constructor(private todoMessage_: string, private done_: boolean = false) {
+  constructor(todoMessage, done) {
     this.id_ = (Date.now() * Math.random()).toString(32);
+    this.todoMessage_ = todoMessage;
+    this.done_ = done;
     this.created_ = new Date();
     this.updated_ = new Date();
   }
