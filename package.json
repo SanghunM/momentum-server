@@ -21,6 +21,7 @@
   "homepage": "https://github.com/tpark43/momentum#readme",
   "dependencies": {
     "cors": "^2.8.5",
+    "dotenv": "^14.3.2",
     "express": "^4.17.2",
     "mongoose": "^6.1.7"
   },
